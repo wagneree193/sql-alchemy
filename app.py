@@ -42,3 +42,16 @@ def welcome():
         f"Temp Start and End Date: /api/v1.0/<start>/<end><br/>"
 
     )
+
+# convert precipitation query results into a dictionary using date as key and prcp as value
+#return JSON representation of the dictionary
+
+
+#Return JSON list from the stations dataset
+
+#query dates and temp observations of most active station for last year of data
+#return JSON list of tobs for previous year
+
+#Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+#When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+#When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
