@@ -45,6 +45,22 @@ def welcome():
 
 # convert precipitation query results into a dictionary using date as key and prcp as value
 #return JSON representation of the dictionary
+@app.route("/api/v1.0/precipitation")
+def precipitation():
+    session = Session(engine)
+    results = session.query(Measurement.date, Measurement.prcp).all()
+
+    session.close()
+    #create an empty list in which to append a list of dictionaries from the row data 
+    prcp_list = []
+
+    for date, prcp in results:
+        prcp_dict = {}
+        prcp_dict["date"] = date
+        prcp_dict["prcp"] = prcp
+        prcp_list.append(prcp.dict)
+
+    return jsonify(prcp_dict)
 
 
 #Return JSON list from the stations dataset
