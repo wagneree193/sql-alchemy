@@ -67,7 +67,7 @@ def precipitation():
 @app.route("/api/v1.0/stations")
 def station ():
     session = Session(engine)
-    results = session.query(Station.id, Station.station, Station.name).all()
+    results = session.query(Station.id, Station.station, Station.name, Station.latitude, Station.longitude, Station.elevation).all()
 
     session.close()
 
@@ -87,11 +87,20 @@ def tobs ():
     sel= [Measurement.date, Measurement.tobs]
     results = session.query(*sel).filter(Measurement.date>=one_ya).filter(Measurement.station == station_activity).all()
 
-    session.close
+    session.close()
     year_tobs = list(np.ravel(results))
     return jsonify (year_tobs)
 
 
 #Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 #When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+@app.route("/api/v1.0/<start>")
+def start ():
+    session = Session (engine)
+    results = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).filter(Measurement.date >= start).all()
+    session.close()
+
+    start_tobs = list(np.ravel(results))
+    return jsonify (start_tobs)
 #When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
+@app.route("/api/v1.0/<start>/<end>")
