@@ -1,4 +1,4 @@
-import numpy as numpy
+import numpy as np
 import datetime as dt 
 
 import sqlalchemy
@@ -64,7 +64,16 @@ def precipitation():
 
 
 #Return JSON list from the stations dataset
+@app.route("/api/v1.0/stations")
+def station ():
+    session = Session(engine)
+    results = session.query(Station.id, Station.station, Station.name).all()
 
+    session.close()
+
+    all_stations = list(np.ravel(results))
+
+    return jsonify (all_stations)
 #query dates and temp observations of most active station for last year of data
 #return JSON list of tobs for previous year
 
