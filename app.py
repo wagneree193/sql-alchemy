@@ -74,8 +74,23 @@ def station ():
     all_stations = list(np.ravel(results))
 
     return jsonify (all_stations)
+
 #query dates and temp observations of most active station for last year of data
 #return JSON list of tobs for previous year
+@app.route("/api/v1.0/tobs")
+def tobs ():
+    session = Session (engine)
+    final_date = session.query(Measurement.date).order_by(Measurement.date.desc()).first()
+    one_ya = dt.datetime.strptime(final_date[0], '%Y-%m-%d')- dt.timedelta(days=365).strftime('%Y-%m-%d')
+    station_activity = session.query(Measurement.station, func.count(Measurement.station)).group_by(Measurement.station).\
+                    order_by(func.count(Measurement.station).desc()).first()
+    sel= [Measurement.date, Measurement.tobs]
+    results = session.query(*sel).filter(Measurement.date>=one_ya).filter(Measurement.station == station_activity).all()
+
+    session.close
+    year_tobs = list(np.ravel(results))
+    return jsonify (year_tobs)
+
 
 #Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 #When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
